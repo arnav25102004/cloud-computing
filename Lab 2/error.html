@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>403 Forbidden / 404 Not Found — NexusCloud</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary:    #050810;
+      --bg-secondary:  #0a0f1e;
+      --bg-card:       rgba(255,255,255,0.04);
+      --border:        rgba(255,255,255,0.08);
+      --accent-blue:   #63b3ed;
+      --accent-cyan:   #4fd1c5;
+      --accent-red:    #fc8181;
+      --accent-orange: #f6ad55;
+      --text-primary:  #f0f4ff;
+      --text-secondary:#a0aec0;
+      --text-muted:    #4a5568;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Grid background ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(252,129,129,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(252,129,129,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Navigation ── */
+    nav {
+      position: relative;
+      z-index: 10;
+      background: rgba(5,8,16,0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 20px rgba(99,179,237,0.35);
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .logo-text span { color: var(--accent-blue); }
+
+    /* ── Main Error Container ── */
+    .error-page {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Glows ── */
+    .glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(130px);
+      pointer-events: none;
+    }
+
+    .glow-red {
+      width: 500px; height: 500px;
+      background: rgba(252,129,129,0.12);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .glow-orange {
+      width: 300px; height: 300px;
+      background: rgba(246,173,85,0.08);
+      bottom: 10%; right: 10%;
+    }
+
+    .glow-blue {
+      width: 350px; height: 350px;
+      background: rgba(99,179,237,0.07);
+      top: 10%; left: 5%;
+    }
+
+    /* ── Error Card ── */
+    .error-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(252,129,129,0.2);
+      border-radius: 24px;
+      padding: 60px 48px;
+      max-width: 680px;
+      width: 100%;
+      text-align: center;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow:
+        0 0 0 1px rgba(252,129,129,0.08),
+        0 40px 80px rgba(0,0,0,0.5),
+        0 0 60px rgba(252,129,129,0.06) inset;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .error-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(252,129,129,0.5), transparent);
+    }
+
+    /* ── Error Icon ── */
+    .error-icon-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100px; height: 100px;
+      margin: 0 auto 28px;
+    }
+
+    .error-icon-ring {
+      position: absolute; inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(252,129,129,0.3);
+      animation: spin-ring 8s linear infinite;
+    }
+
+    .error-icon-ring-2 {
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px dashed rgba(252,129,129,0.15);
+      animation: spin-ring 5s linear infinite reverse;
+    }
+
+    @keyframes spin-ring {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-icon-core {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, rgba(252,129,129,0.15), rgba(246,173,85,0.08));
+      border: 1px solid rgba(252,129,129,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── HTTP Code Badge ── */
+    .http-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .code-chip {
+      background: rgba(252,129,129,0.12);
+      border: 1px solid rgba(252,129,129,0.35);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: var(--accent-red);
+      font-family: 'Courier New', monospace;
+    }
+
+    .code-divider {
+      width: 1px; height: 20px;
+      background: var(--border);
+    }
+
+    .code-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    /* ── Error Text ── */
+    .error-title {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff 30%, var(--accent-red) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .error-sub {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 440px;
+      margin: 0 auto 36px;
+    }
+
+    /* ── Reason Boxes ── */
+    .reason-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 36px;
+      text-align: left;
+    }
+
+    .reason-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex; gap: 10px; align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+
+    .reason-box:hover { border-color: rgba(252,129,129,0.25); }
+
+    .reason-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+
+    .reason-content strong {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+
+    .reason-content span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Action Buttons ── */
+    .error-actions {
+      display: flex; gap: 14px; justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    .btn-home {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+      color: var(--bg-primary);
+      border: none;
+      padding: 13px 28px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 20px rgba(99,179,237,0.3);
+    }
+
+    .btn-home:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(99,179,237,0.45);
+      opacity: 0.95;
+    }
+
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      padding: 13px 24px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    }
+
+    .btn-back:hover {
+      border-color: rgba(99,179,237,0.4);
+      background: rgba(99,179,237,0.06);
+      transform: translateY(-2px);
+    }
+
+    /* ── AWS Policy Box ── */
+    .aws-info {
+      background: rgba(252,129,129,0.05);
+      border: 1px solid rgba(252,129,129,0.15);
+      border-radius: 10px;
+      padding: 16px 20px;
+      text-align: left;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+
+    .aws-info-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+
+    .aws-info-text p {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .aws-info-text strong {
+      color: var(--accent-red);
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .aws-info-text code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      background: rgba(255,255,255,0.06);
+      padding: 1px 5px;
+      border-radius: 4px;
+      color: var(--accent-orange);
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: rgba(10,15,30,0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 580px) {
+      .error-card { padding: 40px 24px; }
+      .reason-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient glows -->
+  <div class="glow glow-red"></div>
+  <div class="glow glow-orange"></div>
+  <div class="glow glow-blue"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">⬡</div>
+        <span class="logo-text">Nexus<span>Cloud</span></span>
+      </a>
+      <a href="index.html" style="font-size:0.85rem;color:var(--text-secondary);text-decoration:none;">
+        &larr; Back to Home
+      </a>
+    </div>
+  </nav>
+
+  <!-- Error Content -->
+  <div class="error-page">
+    <div class="error-card">
+
+      <!-- Animated icon -->
+      <div class="error-icon-wrap">
+        <div class="error-icon-ring"></div>
+        <div class="error-icon-ring-2"></div>
+        <div class="error-icon-core">&#128274;</div>
+      </div>
+
+      <!-- HTTP status badges -->
+      <div class="http-badge">
+        <span class="code-chip">403</span>
+        <div class="code-divider"></div>
+        <span class="code-chip">404</span>
+        <div class="code-divider"></div>
+        <span class="code-label">Access Denied / Not Found</span>
+      </div>
+
+      <!-- Heading -->
+      <h1 class="error-title">Access Denied<br/>or Not Found</h1>
+      <p class="error-sub">
+        The resource you requested is either restricted by an AWS S3 bucket policy,
+        does not exist in this bucket, or your IP address is not on the allowlist.
+      </p>
+
+      <!-- Reason Grid -->
+      <div class="reason-grid">
+        <div class="reason-box">
+          <span class="reason-icon">&#128274;</span>
+          <div class="reason-content">
+            <strong>403 — Access Denied</strong>
+            <span>No bucket policy grants <code style="font-size:0.7em">s3:GetObject</code> for your principal or source IP.</span>
+          </div>
+        </div>
+        <div class="reason-box">
+          <span class="reason-icon">&#10067;</span>
+          <div class="reason-content">
+            <strong>404 — Not Found</strong>
+            <span>The requested object key does not exist in this S3 bucket.</span>
+          </div>
+        </div>
+        <div class="reason-box">
+          <span class="reason-icon">&#127760;</span>
+          <div class="reason-content">
+            <strong>IP Restriction Active</strong>
+            <span>The <code style="font-size:0.7em">aws:SourceIp</code> condition does not match your current public IP.</span>
+          </div>
+        </div>
+        <div class="reason-box">
+          <span class="reason-icon">&#128737;</span>
+          <div class="reason-content">
+            <strong>Block Public Access</strong>
+            <span>Account-level or bucket-level Block Public Access settings may be active.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="error-actions">
+        <a href="index.html" class="btn-home">
+          &#8962; Return to Home
+        </a>
+        <a href="javascript:history.back()" class="btn-back">
+          &larr; Go Back
+        </a>
+      </div>
+
+      <!-- AWS Policy Note -->
+      <div class="aws-info">
+        <span class="aws-info-icon">&#9729;</span>
+        <div class="aws-info-text">
+          <strong>AWS S3 Lab Note</strong>
+          <p>
+            This is the custom error document configured in <strong>S3 Static Website Hosting</strong> settings.
+            It is served instead of the default AWS XML error for <code>403</code> and <code>404</code> responses.
+            To grant access to private assets, update the bucket policy with the appropriate
+            <code>Principal</code>, <code>Action: s3:GetObject</code>, and <code>Condition</code> blocks,
+            or generate a pre-signed URL with a time-limited signature.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 NexusCloud Technologies &mdash; AWS S3 Access Control Lab &mdash;
+    <a href="index.html">Return to Home</a>
+  </footer>
+
+</body>
+</html>
